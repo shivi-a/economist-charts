@@ -1,0 +1,43 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(janitor)
+library(ggthemes)
+library(ggrepel)
+```
+
+```{r data, echo=FALSE, warning=FALSE, message=FALSE}
+
+data <- 
+  read_csv(url("http://infographics.economist.com/databank/Economist_pensions.csv")) %>% 
+  clean_names() %>% 
+  drop_na()
+
+data %>% 
+  ggplot(
+    aes(x = population_aged_65_years_and_over_as_percent_of_total, 
+        y = government_spending_on_pension_benefits_percent_of_gdp)) +
+  geom_point(size = 3, alpha = 0.7) + 
+  theme_economist() + 
+  
+  labs(
+    title = "Brazil's golden oldie blowout", 
+    subtitle = "Latest available", 
+    caption = "Source: OECD; World Bank; Previdencia Social", 
+    x = "Population aged 65 years and over, % of total", 
+    y = NULL) +
+  scale_x_continuous(
+    limits = c(0, 30), 
+    breaks = c(0, 5, 10, 15, 20, 25, 30)) +
+  scale_y_continuous(
+    limits = c(0, 20), 
+    position = "right") + 
+   geom_text_repel(label = data$country, segment.color = NA)
+
+
+```
